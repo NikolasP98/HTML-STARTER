@@ -419,7 +419,7 @@ h6 {
 }
 
 /* Larger than phablet */
-@media (min-width: 550px) {
+@include tablet-and-larger {
 	h1 {
 		font-size: 5rem;
 	}
