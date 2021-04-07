@@ -8,26 +8,45 @@ const sass = require('gulp-sass');
 
 const browserSync = require('browser-sync').create();
 
-// sass.compiler = require('node-sass');
+// prettier-ignore
+const paths = {
+	// SRC
+	src: {
+		main: './src',
+		get pages () {return this.main + '/**/*.html'},
+		get js_scripts () {return this.main + '/script/**/*.js'},
+		get styles () {return this.main + '/style/**/*.scss'},
+		get ts () {return this.main + 'scripts/ts/**/*.ts'},
+		get images () {return this.main + '/img/*'}
+	},
+
+	// DIST
+	dist: {
+		main: './dist',
+		get scripts () {return this.main + '/js'},
+		get styles () {return this.main + '/css'},
+		get images () {return this.main + '/images'}
+	},
+},
+src = paths.src,
+dist = paths.dist;
 
 // Compile TS files to vanilla JS
 gulp.task('tsCompile', async () => {
-	gulp.src('./src/script/ts/**/*.ts')
-		.pipe(tsComp())
-		.pipe(gulp.dest('./src/script'));
+	gulp.src(paths.src.ts).pipe(tsComp()).pipe(gulp.dest(paths.src.js_scripts));
 });
 
 // Optimize images for dist
 gulp.task('imgMin', async () => {
-	gulp.src('./src/img/*')
+	gulp.src(paths.src.images)
 		.pipe(imagemin())
-		.pipe(gulp.dest('./dist/images'))
+		.pipe(gulp.dest(paths.dist.images))
 		.pipe(browserSync.stream());
 });
 
 // Copy html from dev to final build as-is
 gulp.task('htmlCopy', async () => {
-	gulp.src('./src/**/*.html').pipe(gulp.dest('./dist'));
+	gulp.src(paths.src.pages).pipe(gulp.dest(paths.dist.main));
 });
 
 // Compile Sass to minified CSS
